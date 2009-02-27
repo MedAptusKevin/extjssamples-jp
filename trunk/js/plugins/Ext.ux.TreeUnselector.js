@@ -9,18 +9,18 @@ Ext.ux.TreeUnselector = function(){
 
     tree.on('render',function(tree){
       var el = tree.getTreeEl();
-			el.on('click',function(e,t){ 
-			  if(this.id == t.id){ 
-					tree.getSelectionModel().clearSelections(); 
-				} 
-			},el); 
-		}); 
+      el.on('click',function(e,t){ 
+        if(this.id == t.id){ 
+          tree.getSelectionModel().clearSelections(); 
+        } 
+      },el); 
+    }); 
 
-		tree.on('beforeclick',function(node,event){ 
-			if(node.isSelected()){ 
-				node.unselect(); 
-				return false; 
-			}
-		});
-	};    
+    tree.on('beforeclick',function(node,event){ 
+      if(node.isSelected()){ 
+        node.unselect(); 
+        return false; 
+      }
+    });
+  };    
 };
