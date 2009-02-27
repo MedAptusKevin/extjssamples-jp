@@ -1,123 +1,123 @@
 <html>
-	<head>
-		<meta http-equiv="content-type" content="text/html;charset=utf-8">
-		<title>サンプル: 複数のグリッドを同時にソート</title>
-		<link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
-		<script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
-		<script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all.js"> </script>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>サンプル: 複数のグリッドを同時にソート</title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all.js"> </script>
 
-		<script type="text/javascript"><!--
-			Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
-			Ext.onReady(function(){
-				var data1 = [], data2 = [], data3 = [];
-				for(var i=0; i<10; i++){
-					data1[i] = [];
-					data2[i] = [];
-					data3[i] = [];
-					for(var j=0; j<4; j++){
-						data1[i][j] = Math.floor((Math.random()*100));
-						data2[i][j] = Math.floor((Math.random()*100));
-						data3[i][j] = Math.floor((Math.random()*100));
-					}	
-				}
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
+      Ext.onReady(function(){
+        var data1 = [], data2 = [], data3 = [];
+        for(var i=0; i<10; i++){
+          data1[i] = [];
+          data2[i] = [];
+          data3[i] = [];
+          for(var j=0; j<4; j++){
+            data1[i][j] = Math.floor((Math.random()*100));
+            data2[i][j] = Math.floor((Math.random()*100));
+            data3[i][j] = Math.floor((Math.random()*100));
+          }  
+        }
 
-				var store1 = new Ext.data.SimpleStore({
-					data: data1,
-					fields: 'A B C D'.split(' ') 
-				});
+        var store1 = new Ext.data.SimpleStore({
+          data: data1,
+          fields: 'A B C D'.split(' ') 
+        });
 
-				var store2 = new Ext.data.SimpleStore({
-					data: data2,
-					fields: 'A B C D'.split(' ') 
-				});
+        var store2 = new Ext.data.SimpleStore({
+          data: data2,
+          fields: 'A B C D'.split(' ') 
+        });
 
-				var store3 = new Ext.data.SimpleStore({
-					data: data3,
-					fields: 'A B C D'.split(' ') 
-				});
+        var store3 = new Ext.data.SimpleStore({
+          data: data3,
+          fields: 'A B C D'.split(' ') 
+        });
 
-				var panel1 = new Ext.Panel({
-					layout: 'table',
-					border: false,
-					layoutConfig: {
-						columns: 2
-					},
-					defaults: {
-						xtype: 'grid',
-						store: store1,
-						autoScroll: true,
-						viewConfig: {forceFit: true},
-						width:300,
-						height:300
-					},
-					items: [{
-						title: 'Grid1+Store1',
-						columns: [
-							{ header: "A", dataIndex: 'A', sortable: true },
-							{ header: "B", dataIndex: 'B', sortable: true }
-						]
-					},{
-						title: 'Grid2+Store1',
-						columns: [
-							{ header: "C", dataIndex: 'C', sortable: true },
-							{ header: "D", dataIndex: 'D', sortable: true }
-						]
-					}],
-					renderTo: 'panel1'
-				});
+        var panel1 = new Ext.Panel({
+          layout: 'table',
+          border: false,
+          layoutConfig: {
+            columns: 2
+          },
+          defaults: {
+            xtype: 'grid',
+            store: store1,
+            autoScroll: true,
+            viewConfig: {forceFit: true},
+            width:300,
+            height:300
+          },
+          items: [{
+            title: 'Grid1+Store1',
+            columns: [
+              { header: "A", dataIndex: 'A', sortable: true },
+              { header: "B", dataIndex: 'B', sortable: true }
+            ]
+          },{
+            title: 'Grid2+Store1',
+            columns: [
+              { header: "C", dataIndex: 'C', sortable: true },
+              { header: "D", dataIndex: 'D', sortable: true }
+            ]
+          }],
+          renderTo: 'panel1'
+        });
 
-				var panel2 = new Ext.Panel({
-					layout: 'table',
-					border: false,
-					layoutConfig: {
-						columns: 2
-					},
-					defaults: {
-						xtype: 'grid',
-						autoScroll: true,
-						viewConfig: {forceFit: true},
-						width:300,
-						height:300,
-						columns: [
-							{ header: "A", dataIndex: 'A', sortable: true },
-							{ header: "B", dataIndex: 'B', sortable: true },
-							{ header: "C", dataIndex: 'C', sortable: true },
-							{ header: "D", dataIndex: 'D', sortable: true }
-						]
-					},
-					items: [{
-						title: 'Grid3+Store2',
-						store: store2,
-						listeners: {
-							'sortchange': function(t,si){
-								t.suspendEvents();
-								store3.sort(si.field, si.direction);	
-								t.resumeEvents();
-							}
-						}
-					},{
-						title: 'Grid4+Store3',
-						store: store3,	
-						listeners: {
-							'sortchange': function(t,si){
-								t.suspendEvents();
-								store2.sort(si.field, si.direction);	
-								t.resumeEvents();
-							}
-						}
-					}],
-					renderTo: 'panel2'
-				});
-			});
-		// --></script>
-	</head>
-	<body>
-		<h1>サンプル：複数のグリッドを同時にソート</h1>
-		<h2>Storeを共有している場合</h2>
-		<div id="panel1"></div>
-		<h2>Storeが異なる場合(データキーは一致)</h2>
-		<div id="panel2"></div>
-	</body>
+        var panel2 = new Ext.Panel({
+          layout: 'table',
+          border: false,
+          layoutConfig: {
+            columns: 2
+          },
+          defaults: {
+            xtype: 'grid',
+            autoScroll: true,
+            viewConfig: {forceFit: true},
+            width:300,
+            height:300,
+            columns: [
+              { header: "A", dataIndex: 'A', sortable: true },
+              { header: "B", dataIndex: 'B', sortable: true },
+              { header: "C", dataIndex: 'C', sortable: true },
+              { header: "D", dataIndex: 'D', sortable: true }
+            ]
+          },
+          items: [{
+            title: 'Grid3+Store2',
+            store: store2,
+            listeners: {
+              'sortchange': function(t,si){
+                t.suspendEvents();
+                store3.sort(si.field, si.direction);  
+                t.resumeEvents();
+              }
+            }
+          },{
+            title: 'Grid4+Store3',
+            store: store3,  
+            listeners: {
+              'sortchange': function(t,si){
+                t.suspendEvents();
+                store2.sort(si.field, si.direction);  
+                t.resumeEvents();
+              }
+            }
+          }],
+          renderTo: 'panel2'
+        });
+      });
+    // --></script>
+  </head>
+  <body>
+    <h1>サンプル：複数のグリッドを同時にソート</h1>
+    <h2>Storeを共有している場合</h2>
+    <div id="panel1"></div>
+    <h2>Storeが異なる場合(データキーは一致)</h2>
+    <div id="panel2"></div>
+  </body>
 </html>
 
 
