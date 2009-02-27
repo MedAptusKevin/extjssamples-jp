@@ -12,19 +12,19 @@
       Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
       Ext.onReady(function(){
         new Ext.tree.TreePanel({
-					width: 300,
-					height: 300,
+          width: 300,
+          height: 300,
           root: {
             text: 'root',
-						expanded: true,
+            expanded: true,
             children: [
-						  { text: 'child1', leaf: true },
-							{ text: 'child2', leaf: true },
-							{ text: 'folder1', children: [{ text: 'child1', leaf: true }] }
-						]
+              { text: 'child1', leaf: true },
+              { text: 'child2', leaf: true },
+              { text: 'folder1', children: [{ text: 'child1', leaf: true }] }
+            ]
           },
-					plugins: new Ext.ux.TreeUnselector(),
-					renderTo: 'tree'
+          plugins: new Ext.ux.TreeUnselector(),
+          renderTo: 'tree'
         });
       });
 
