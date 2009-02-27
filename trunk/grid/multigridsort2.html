@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>サンプル: 複数のグリッドを同時にソート・スクロール・選択</title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all.js"> </script>
+
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
+      Ext.onReady(function(){
+        var data1 = [];
+        for(var i=0; i<30; i++){
+          data1[i] = [];
+          for(var j=0; j<4; j++){
+            data1[i][j] = Math.floor((Math.random()*100));
+          }  
+        }
+
+        var store1 = new Ext.data.SimpleStore({
+          data: data1,
+          fields: 'A B C D'.split(' ') 
+        });
+
+				var syncScroll = function(v,l,t){
+				  v.scroller.dom.scrollTop = t;
+				//   v.scroller.dom.scrollLeft = l;
+				};
+
+				var syncSelect = function(sm,ri){
+					sm.selectRow(ri);	
+				}
+
+        var panel1 = new Ext.Panel({
+          layout: 'table',
+          border: false,
+          layoutConfig: {
+            columns: 2
+          },
+          defaults: {
+            xtype: 'grid',
+						frame: true,
+            store: store1,
+            autoScroll: true,
+            viewConfig: {forceFit: true},
+            width:300,
+            height:300
+          },
+          items: [{
+            title: 'Grid1+Store1',
+						id: 'grid1',
+            columns: [
+              { header: "A", dataIndex: 'A', sortable: true },
+              { header: "B", dataIndex: 'B', sortable: true }
+            ],
+						listeners:{
+							'bodyscroll': function(l,t){
+								syncScroll(Ext.getCmp('grid2').getView(),l,t);
+							}
+						}
+          },{
+            title: 'Grid2+Store1',
+						id: 'grid2',
+            columns: [
+              { header: "C", dataIndex: 'C', sortable: true },
+              { header: "D", dataIndex: 'D', sortable: true }
+            ],
+						listeners:{
+							'bodyscroll': function(l,t){
+								syncScroll(Ext.getCmp('grid1').getView(),l,t);
+							}
+						}
+          }],
+          renderTo: 'panel1'
+        });
+
+				Ext.getCmp('grid1').getSelectionModel().on('rowselect',function(t,ri,rec){
+					syncSelect(Ext.getCmp('grid2').getSelectionModel(),ri);	
+				});
+
+				Ext.getCmp('grid2').getSelectionModel().on('rowselect',function(t,ri,rec){
+					syncSelect(Ext.getCmp('grid1').getSelectionModel(),ri);	
+				});
+      });
+    // --></script>
+  </head>
+  <body>
+    <h1>サンプル：複数のグリッドを同時にソート&amp;スクロール&amp;選択</h1>
+    <div id="panel1"></div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
