@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>サンプル: Ext.ux.GridUnselectorプラグイン</title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all.js"> </script>
+
+    <script type="text/javascript" src="../js/plugins/Ext.ux.GridUnselector.js"> </script>
+
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
+      Ext.onReady(function(){
+        var sm1 = new Ext.grid.RowSelectionModel();
+        var sm2 = new Ext.grid.CheckboxSelectionModel();
+        var sm3 = new Ext.grid.CellSelectionModel();
+
+        var  store = new Ext.data.SimpleStore({
+          data: [[1,2,3],[4,5,6],[7,8,9]],
+          fields: 'A B C'.split(' ') 
+        });
+
+        var cols1 = [
+          { header: 'あ', dataIndex: 'A', sortable: true },
+          { header: 'い', dataIndex: 'B', sortable: true },
+          { header: 'う', dataIndex: 'C', sortable: true }
+        ];
+
+        var cols2 = Array.apply(null,cols1);
+        var cols3 = Array.apply(null,cols1);
+        cols2.unshift(sm2);
+
+        cfg = {
+          width: 500,
+          height: 200,
+          viewConfig: {
+            forceFit: true
+          },
+          store: store,
+        };
+
+        var grid1 = new Ext.grid.GridPanel(Ext.apply({
+          columns: cols1,
+          plugins: new Ext.ux.GridUnselector(),
+          sm: sm1,
+          renderTo: 'grid1'
+        },cfg));
+        
+        var grid2 = new Ext.grid.GridPanel(Ext.apply({
+          columns: cols2,
+          plugins: new Ext.ux.GridUnselector(),
+          sm: sm2,
+          renderTo: 'grid2'
+        },cfg));
+        
+        var grid3 = new Ext.grid.GridPanel(Ext.apply({
+          columns: cols3,
+          plugins: new Ext.ux.GridUnselector(),
+          sm: sm3,
+          renderTo: 'grid3'
+        },cfg));
+        
+      });
+
+    // --></script>
+  </head>
+  <body>
+    <h1>サンプル：Ext.ux.GridUnselectorプラグイン</h1>
+    <p>グリッドパネルの余白をクリックすると選択が外れます。選択されているノードをクリックしても選択を外せます</p>
+    <h2>RowSelectionModel</h2>
+    <div id="grid1"></div>
+    <h2>CheckBoxSelectionModel</h2>
+    <div id="grid2"></div>
+    <h2>CellSelectionModel</h2>
+    <div id="grid3"></div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
