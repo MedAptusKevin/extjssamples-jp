@@ -1,0 +1,210 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Sample: Ext.ux.JsonpTreeLoader demo (Powered by Panoramio API) </title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all.js"> </script>
+
+    <script type="text/javascript" src="Ext.ux.JsonpTreeLoader.js"> </script>
+    <style>
+      .panoramio-photo-desc h1{
+        color: #00654A;
+        font-size: 1.3em;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .panoramio-photo-desc p{
+        color: #666666;
+        font-size: 0.9em;
+      }
+
+      .panoramio-photo-desc p.owner{
+        font-weight: bold;
+      }
+
+    </style>
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
+
+      Ext.onReady(function(){
+        // basic configs for tree loader
+				var params = {
+          url: 'http://www.panoramio.com/map/get_panoramas.php',
+					totalProperty: 'count',
+          root: 'photos',
+					callbackParam: 'callback',
+          baseParams:{
+	          order: 'popularity',
+	          set: 'public',
+	          size: 'medium',
+	          minx: -180,
+	          miny: -90,
+	          maxx: 180,
+	          maxy: 90
+          }
+				};
+
+        // JsonpTreeLoader creation for actual photo data 
+				var photo_loader = new Ext.ux.JsonpTreeLoader(Ext.apply(params, {
+          nodeProperty: ['photos'],  
+					mappingFn: {
+            photos: function(a,n){
+              a.text = n.photo_title;
+              a.leaf = true;
+            }
+					},
+          listeners: {
+            beforeload: {
+              fn: function(t,n,cb){
+	              Ext.apply(t.baseParams,{
+	                from: n.attributes.from,
+	                to: n.attributes.to,
+	              });
+                return true;
+              }
+            },
+          }
+				}));
+
+        // JsonpTreeLoader creation for rank tree creation
+        var rank_loader = new Ext.ux.JsonpTreeLoader(Ext.apply(params,{
+          nodeProperty: [], // explicitly state "no node from extracted data"
+          rankStart: 1, // custom config to be used in "load" event
+          totalRecords: 0, // custom config to be used in "load" event
+          targetNode: null, // custom config to be used in "load" event
+          listeners: {
+            beforeload: function(t,n,cb){
+              // Panoramio requires "from" and "to" parameters. So just give it 0 to 1.
+              t.baseParams.from = 0;
+              t.baseParams.to = 1;
+              return true;
+            },
+            load: function(t,n,r){
+              t.totalRecords = t.totalRecords || n.attributes.totalRecords;
+
+              var nodes = [];
+              for(var i=0; t.rankStart <= t.totalRecords && i<10; i++){
+                var from = t.rankStart;
+                var to = from + 9 <= t.totalRecords ? from + 9 : t.totalRecords;
+                t.rankStart = to + 1;
+
+                var node = {
+                  text: from+' to '+to,
+                  to: to,
+                  from: from,
+                  loaded: false,
+                  nodeLoader: photo_loader
+                };
+                nodes.push(t.createNode(node));
+              }
+            
+              // "more photos" node which will be replaced by additional nodes when expanded
+              if(t.rankStart-1 < t.totalRecords){
+	              var extra = {
+	                text: (n.attributes.totalRecords-t.rankStart+1)+' more photos',
+	                loaded: false
+	              };
+                var tgt = t.createNode(extra);
+                tgt.attributes.targetNode = tgt;
+                nodes.push(tgt);
+              }
+              
+              if(n.attributes.targetNode){
+                n.parentNode.appendChild(nodes);
+                n.parentNode.removeChild(n.attributes.targetNode);
+              }else{
+                n.appendChild(nodes);
+              }
+            }
+          }
+        }));
+
+        var vp = new Ext.Viewport({
+          layout: 'border',
+          items: [{
+            region: 'north',
+            html: '<h1>Ext.ux.JsonpTreeLoader demo (powered by Panoramio JSONP API)</h1>',
+            height: 30
+          },{
+            region: 'west',
+            xtype: 'treepanel',
+            autoScroll: true,
+            lines: false,
+						root: new Ext.tree.AsyncTreeNode({
+	            nodeType: 'root',
+              text: 'Photos by popularity',
+              expanded: true
+	          }),
+						loader: rank_loader,
+            id: 'treep',
+						width: 250,
+            split: true
+          },{
+            region: 'east',
+            layout: 'fit',
+            width: 300,
+            split: true,
+            tpl: new Ext.XTemplate(
+              '<div class="panoramio-photo-desc" style="display:none">',
+              '<h1>{photo_title}</h1>',
+              '<p class="owner">Photo by: {owner_name}<span>(<a href="{owner_url}" target="_blank">link</a>)</span></p>',
+              '<p>Photo taken at:</p>',
+              '<img src="http://maps.google.com/staticmap?center={latitude},{longitude}&zoom=10&size={map_width}x{map_width}&markers={latitude},{longitude}&key=ABQIAAAA3HEaipgCJKasbKv8S1gdbBRieczVyin3kfHCNY4RFruKo4FGxxRMC25PZ8kXlQX3hekWYRm-Y_jwdw" /><br clear="all" />',
+              '<p>[<a href="http://maps.google.com/?ie=UTF8&ll={latitude},{longitude}&z=10" target="_blank">Go to Google Map</a>]</p>',
+              '<p>[<a href="{photo_url}" target="_blank">Go to Panoramio</a>]</p>',
+              '</div>'
+            ),
+            listeners: {
+              render: function(t){
+                Ext.getCmp('treep').on('click',function(n,e){
+                  var attr = n.attributes;
+                  attr.map_width = Math.min(t.body.getWidth(),512);
+                  var el = t.tpl.overwrite(t.body,attr,true);
+                  el.fadeIn.defer(1.0, el, [{duration:2.0}]);
+                });
+              }
+            }
+          },{
+            region: 'center',
+            layout: 'fit',
+            listeners: {
+              render: function(t){
+                Ext.getCmp('treep').on('click',function(n,e){
+                  var attr = n.attributes;
+                  if(attr.photo_file_url){
+                    var bw = t.body.getWidth();
+                    var bh= t.body.getHeight();
+                   
+                    var ar = parseFloat(attr.width) / parseFloat(attr.height);
+                    var w = Math.min(bw, parseInt(attr.width));
+                    var h = w / ar;
+                    if(h > bh){ h = bh; w = h * ar; }
+
+                    var img = Ext.DomHelper.append(t.body,{
+                      tag: 'img',
+                      cls: 'panoramioimg',
+                      src: attr.photo_file_url,
+                      height: h,
+                      width: w,
+                      style: 'display:none'
+                    },true);
+                    img.on('load', function(){
+                      var tmp = Ext.select('img.panoramioimg',true,t.body.dom);
+                      if(tmp.getCount()>1) tmp.item(0).removeAllListeners()
+                                                      .slideOut('l',{duration: .5, remove: true});
+                      this.slideIn.defer(600,this,['r']);
+                    },img);
+                  }
+                });
+              }
+            }
+          }] 
+        })
+      });
+    // --></script>
+  </head>
+  <body>
+  </body>
+</html>
