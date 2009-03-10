@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Sample: Ext.ux.SpreadsheetGridPanel demo</title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all-debug.js"> </script>
+
+    <script type="text/javascript" src="../js/Ext.ux.SpreadsheetGridPanel.js"> </script>
+
+    <style>
+      .x-grid3-row{
+        border-style: none solid none none;        
+      }
+
+      .x-grid3-cell-inner{
+        border-color: #EDEDED;
+        border-style: none none solid solid;
+        border-width: 0 0 1px 1px;
+        padding: 2px 2px 2px 4px;
+        text-align: center;
+        overflow:        auto; 
+        white-space:  normal;
+      }
+    </style>
+
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
+      Ext.onReady(function(){
+				new Ext.ux.SpreadsheetGridPanel({
+					title: 'You can only PASTE, no COPY',
+					layout: 'fit',
+					width: 600,
+					height: 400,
+          colsNum: 15,
+          rowsNum: 20,
+					renderTo: 'panel'
+				});
+      });
+    // --></script>
+  </head>
+  <body>
+    <h1>Sample: Ext.ux.SpreadsheetGridPanel demo</h1>
+    <p style="font-weight:bold;color:red">Currently, you can only PASTE, no COPY!</p>
+    <p>Click any cell on the grid, and paste by pressing Ctrl+v (or Command+v for OSX). "Paste" menu won't work.'</p>
+    <p>Works fine with FF3 and Safari3 on OSX, IE7 on Win. FF3 on Win, slow. Chrome, not working</p>
+    <div id="panel"></div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
