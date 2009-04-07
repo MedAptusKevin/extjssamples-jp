@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Ext.dd.DD.constrainTo: ドラッグ可能な範囲を限定する</title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all.js"> </script>
+
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
+      Ext.onReady(function(){
+				var cfg = {
+					width: 300,
+					height: 200,
+					draggable: true,
+					x: 50,
+					y: 50
+				};
+
+				var win1 = new Ext.Window(Ext.apply(cfg,{
+					title: 'Drag範囲の制限無し',
+					html: 'Drag範囲の制限無し'
+				}));
+
+				var win2 = new Ext.Window(Ext.apply(cfg,{
+					title: 'Drag範囲の制限有り',
+					html: 'Drag範囲の制限有り'
+				}));
+				win1.show();
+				win2.show();
+				win2.dd.constrainTo(Ext.get("constraindiv"));
+      });
+    // --></script>
+  </head>
+  <body>
+    <h1>Ext.dd.DD.constrainTo: ドラッグ可能な範囲を限定する</h1>
+    <div id="constraindiv" style="background-color:yellow;width:500;height:400"></div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
