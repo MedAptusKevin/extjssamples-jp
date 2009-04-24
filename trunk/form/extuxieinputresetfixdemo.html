@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Sample: Ext.ux.IEInputResetFix (plugin to fix IE6/7 behavior on radio/checkbox)</title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all.js"> </script>
+    <script type="text/javascript" src="../js/plugins/Ext.ux.IEInputResetFix.js"> </script>
+
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
+      Ext.onReady(function(){
+          var cfg = {
+            collapsible: true,
+            animCollapse: true,
+            width: 300,
+            height: 150
+          };
+          
+          new Ext.Panel(Ext.apply({
+            renderTo: "panel1",
+            contentEl: "noplugin",
+            title: "No plugin"
+          },cfg));
+          
+          new Ext.Panel(Ext.apply({
+            renderTo: "panel2",
+            contentEl: "withplugin",
+            title: "With plugin",
+            plugins: [
+              new Ext.ux.IEInputResetFix() 
+            ]
+          },cfg));
+      });
+    // --></script>
+  </head>
+  <body>
+    <h1>Sample: Ext.ux.IEInputResetFix plugin</h1>
+    <p>IE6/7において、INPUTタグ（checkboxとradio）を動的に移動（Ext.DomHelper.appendToなど）させるとchecked属性がリセットされてしまうという現象を防ぐためのプラグインです(<a href="../js/plugins/Ext.ux.IEInputResetFix.js">Ext.ux.IEInputResetFix</a>)</p>
+    <br />
+    <h2>Plugin無し</h2>
+    <p>radio/checkboxのチェック状態を変更してパネルを閉じて再度開くとリセットされます（IE6/7）</p>
+    <div id="panel1">
+      <div id="noplugin">
+      チェックボックス：
+       <input type="checkbox" name="check1" value="1">A
+       <input type="checkbox" name="check1" value="2" checked="checked">B
+       <input type="checkbox" name="check1" value="3">C
+       <br />
+      ラジオボタン：
+       <input type="radio" name="radio1" value="1">い
+       <input type="radio" name="radio1"  value="2" checked="checked">ろ
+       <input type="radio" name="radio1"  value="3">は
+      </div>
+    </div>
+    <br />
+    <h2>Plugin有り</h2>
+    <p>プラグインをいれることで、閉じる前の状態が保持されます</p>
+    <div id="panel2">
+      <div id="withplugin">
+      チェックボックス：
+       <input type="checkbox" name="check2" value="1">A
+       <input type="checkbox" name="check2" value="2" checked="checked">B
+       <input type="checkbox" name="check2" value="3">C
+       <br />
+      ラジオボタン：
+       <input type="radio" name="radio2" value="1">い
+       <input type="radio" name="radio2"  value="2" checked="checked">ろ
+       <input type="radio" name="radio2"  value="3">は
+      </div>
+    </div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
