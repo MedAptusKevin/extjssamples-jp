@@ -1,0 +1,102 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Ext.ux.GridDDText サンプル</title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-2.2.1/ext-all.js"> </script>
+    <script type="text/javascript" src="../js/plugins/Ext.ux.GridDDText.js"> </script>
+
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
+
+      Ext.onReady(function(){
+			  // ダミーデータの生成
+        var alphabets = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z".split(" ");
+        var len = alphabets.length;
+        var data = [];
+
+        for(var i=0; i<20; i++){
+          data[i] = [];
+          for(var j=0; j<4; j++){
+            var idx = Math.floor(Math.random() * len);
+            var num = Math.floor(Math.random() * 1000);
+            data[i][j] = alphabets[idx]+num;  
+          }
+        }
+
+        new Ext.Viewport({
+          layout: 'border',
+          items: [{
+            region: 'north',
+            html: '<h1 style="font-size:1.1em">Gridのデータをドラッグする際の文字列のカスタマイズサンプル</h1><p style="font-size:0.8em">グリッドのデータを選択してドラッグしてください</p>',
+            height: 50 
+          },{
+            region: 'center',
+            xtype: 'grid',
+            layout: 'fit',
+            enableDragDrop: true,
+            ddGroup: 'gridDDGroup',
+            viewConfig: {
+              forceFit: true  
+            },
+            store: new Ext.data.SimpleStore({
+              fields:['colA','colB','colC','colD'],
+              data: data
+            }),
+            columns: [
+						  { header: 'Column A', dataIndex: 'colA' },
+							{ header: 'Column B', dataIndex: 'colB' },
+							{ header: 'Column C', dataIndex: 'colC' },
+							{ header: 'Column D', dataIndex: 'colD' }
+						],
+            plugins: [new Ext.ux.GridDDText()] // ddTextの内容を変更するためのプラグイン
+          },{
+            region: 'east',
+            split: true,
+            width: 400,
+            xtype: 'form',
+            defaultType: 'textfield',
+            items: [
+						  { fieldLabel: 'Column A', name: 'colA' },
+							{ fieldLabel: 'Column B', name: 'colB' },
+							{ fieldLabel: 'Column C', name: 'colC' },
+							{ fieldLabel: 'Column D', name: 'colD' }
+						],
+            listeners: {
+              render: function(t){
+                var tgt = new Ext.dd.DropTarget(t.body.dom, {
+                  ddGroup: 'gridDDGroup',
+                  notifyEnter: function(s,e,d){
+                    t.body.stopFx().highlight();  
+                  },
+                  notifyDrop: function(s,e,d){
+                    var data = d.selections[0].data;
+                    t.getForm().setValues(data);
+                  }
+                })
+              }
+            }
+          }]
+        });
+      });
+    // --></script>
+  </head>
+  <body>
+    <h1>サンプル：(サンプルの簡単な説明)</h1>
+    <div></div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
