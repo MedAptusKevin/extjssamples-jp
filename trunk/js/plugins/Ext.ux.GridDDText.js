@@ -16,7 +16,7 @@ Ext.ux.GridDDText = function(){
     if(!v.dragZone) return;
 
     grid.getDragDropText = function(){
-		  // 以下のコードをカスタマイズして好みのddTextにする
+      // 以下のコードをカスタマイズして好みのddTextにする
       var sel = v.dragZone.dragData.selections;
       var rows = [];
       for(var i=0; i<sel.length; i++){
