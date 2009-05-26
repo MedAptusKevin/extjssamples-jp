@@ -31,6 +31,6 @@ Ext.ux.GridDDText = function(){
         }
       }
       return rows.join('<br />');
-		};
+    };
   }
 };
