@@ -4,34 +4,35 @@
 
 Ext.ns('Ext.ux');
 
-Ext.ux.GridDDText = function(){
-  this.init = function(grid){
+Ext.ux.GridDDText = function(fn,scope){
+  if(fn && typeof fn == 'function'){
+    this.ddfn = fn;
+  }
+  
+  if(scope && typeof scope == 'string'){
+    this.scope = scope;
+  }
+};
+
+Ext.ux.GridDDText.prototype = {
+  init : function(grid){
+    if(!this.ddfn) return;
+
     this.grid = grid;
     grid.on('render',this.modifyDragDropText, this);
   },
 
-  this.modifyDragDropText = function(){
+  modifyDragDropText : function(){
     var grid = this.grid;
     var v = grid.getView();
     if(!v.dragZone) return;
 
+    var fn = this.ddfn;
+    var scope = this.scope || this;
+
     grid.getDragDropText = function(){
-      // 以下のコードをカスタマイズして好みのddTextにする
       var sel = v.dragZone.dragData.selections;
-      var rows = [];
-      for(var i=0; i<sel.length; i++){
-        var data = [];
-        for(var key in sel[i].data){
-          data.push(sel[i].data[key]);
-        }
-        if(i>=2){
-          rows.push('...(その他'+(sel.length-2)+'行)');
-          break;
-        }else{
-          rows.push(data.join(','));
-        }
-      }
-      return rows.join('<br />');
-    };
+      return fn.call(scope, grid, sel);   
+    }
   }
 };
