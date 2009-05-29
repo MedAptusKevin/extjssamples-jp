@@ -11,7 +11,7 @@
       Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-2.2.1/resources/images/default/s.gif";
 
       Ext.onReady(function(){
-			  // ダミーデータの生成
+        // ダミーデータの生成
         var alphabets = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z".split(" ");
         var len = alphabets.length;
         var data = [];
@@ -45,11 +45,11 @@
               data: data
             }),
             columns: [
-						  { header: 'Column A', dataIndex: 'colA' },
-							{ header: 'Column B', dataIndex: 'colB' },
-							{ header: 'Column C', dataIndex: 'colC' },
-							{ header: 'Column D', dataIndex: 'colD' }
-						],
+              { header: 'Column A', dataIndex: 'colA' },
+              { header: 'Column B', dataIndex: 'colB' },
+              { header: 'Column C', dataIndex: 'colC' },
+              { header: 'Column D', dataIndex: 'colD' }
+            ],
             plugins: [new Ext.ux.GridDDText()] // ddTextの内容を変更するためのプラグイン
           },{
             region: 'east',
@@ -58,11 +58,11 @@
             xtype: 'form',
             defaultType: 'textfield',
             items: [
-						  { fieldLabel: 'Column A', name: 'colA' },
-							{ fieldLabel: 'Column B', name: 'colB' },
-							{ fieldLabel: 'Column C', name: 'colC' },
-							{ fieldLabel: 'Column D', name: 'colD' }
-						],
+              { fieldLabel: 'Column A', name: 'colA' },
+              { fieldLabel: 'Column B', name: 'colB' },
+              { fieldLabel: 'Column C', name: 'colC' },
+              { fieldLabel: 'Column D', name: 'colD' }
+            ],
             listeners: {
               render: function(t){
                 var tgt = new Ext.dd.DropTarget(t.body.dom, {
