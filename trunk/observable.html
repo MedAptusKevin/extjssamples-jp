@@ -1,0 +1,180 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>サンプル: （サンプルの簡単な説明）</title>
+    <link rel="stylesheet" type="text/css" href="http://extjs.cachefly.net/ext-3.1.0/resources/css/ext-all.css" />
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.1.0/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://extjs.cachefly.net/ext-3.1.0/ext-all.js"> </script>
+
+    <script type="text/javascript"><!--
+      Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-3.1.0/resources/images/default/s.gif";
+
+			TestObs = Ext.extend(Ext.util.Observable, {
+				constructor	: function(id){
+					this.el = Ext.get(id);
+
+					this.addEvents('elclick', 'afterclick', 'afterafterclick', 'shiftend');
+
+					this.el.on('click', this.onElclick, this);
+					TestObs.superclass.constructor.call(this);
+				},
+
+				shift : function(opt){
+					var me = this;
+					if(opt.x || opt.y){
+						opt.callback = function(el){
+							me.fireEvent('shiftend', me);	
+						};
+					}
+
+					this.el.shift(opt);	
+				},
+
+				onElclick: function(){
+					if(this.fireEvent('elclick', this)){
+						if(this.fireEvent('afterclick', this)){
+							this.fireEvent('afterafterclick', this);
+						}
+					}
+				}
+			});
+
+      Ext.onReady(function(){
+				var sz = Ext.fly('wrap').getSize(true);
+				var maxX = sz.width - Ext.fly("div1").getWidth(true);
+				var maxY = sz.height - Ext.fly("div1").getHeight(true);
+
+				var getRandomPos = function(max){
+					return function(){
+						return Math.random() * max;
+					}
+				};
+
+				var getX = getRandomPos(maxX);
+				var getY = getRandomPos(maxY);
+
+				var getOpt = function(){
+					return {
+						x: getX(),
+						y: getY(),
+						duration: Math.random()
+					};
+				}
+
+				var a = [];
+				for(var i=1; i<=5; i++){
+					var o = new TestObs("div"+i);
+					o.idx = i-1;
+					o.on({
+						elclick: function(){
+							this.shift(getOpt());
+						},
+						shiftend: function(){
+							if(a[this.idx+1]){
+								a[this.idx+1].shift(getOpt());
+							}
+						},
+						scope: o
+					})
+					a.push(o);
+				}
+
+				a[0].on('afterclick',function(){
+					this.el.highlight();	
+				},a[0]);
+
+				a[0].on('elclick',function(){
+					this.shift({
+						duration: 1,
+						width: getX(),
+						height: getY()
+					})
+				},a[0]);
+
+				Ext.get("btn").on('click',function(e,el){
+					if(el.value == '停止'){
+						el.value = '再開';
+						f = 'suspendEvents';
+					}else{
+						el.value = '停止';
+						f = 'resumeEvents';
+					}
+					Ext.each(a, function(o){
+						if(o[f]){
+							o[f](true);
+						}
+					})
+				});
+
+/*
+				WrapObs = Ext.extend(Ext.util.Observable, {
+					constructor: function(id){
+						this.el = Ext.get(id);
+						WrapObs.superclass.constructor.call(this);
+
+					}
+				});
+
+				var w = new WrapObs("wrap");
+				w.relayEvents(a[0], ['elclick']);
+
+				w.on('elclick', function(){
+					this.el.highlight();		
+				},w);
+				Ext.util.Observable.capture(a[0],function(){
+					console.dir(arguments);
+				});
+				Ext.util.Observable.observeClass(TestObs);
+				TestObs.on("shiftend",function(){
+					console.dir(arguments);
+				});
+				a[4].beforeMethod('shift',function(){
+					alert("Before Shift");	
+				});
+				a[4].afterMethod('shift',function(){
+					alert("After Shift");	
+				});
+*/
+			
+
+      });
+    // --></script>
+		<style>
+			.div-wrap {
+				padding: 10px;
+				border: 3px solid red;
+				height: 500px;
+			}
+
+			.divs {
+				border: 1px solid black;
+				width: 100px;
+				height: 100px;
+				position: absolute;
+			}
+		</style>
+  </head>
+  <body>
+		<div id="wrap", class="div-wrap">
+			<div id="div1", class="divs">DIV1</div>
+			<div id="div2", class="divs">DIV2</div>
+			<div id="div3", class="divs">DIV3</div>
+			<div id="div4", class="divs">DIV4</div>
+			<div id="div5", class="divs">DIV5</div>
+		</div>
+		<input type="button" id="btn" value="停止" />
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
