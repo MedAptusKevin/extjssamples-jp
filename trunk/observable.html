@@ -9,160 +9,172 @@
     <script type="text/javascript"><!--
       Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-3.1.0/resources/images/default/s.gif";
 
-			TestObs = Ext.extend(Ext.util.Observable, {
-				constructor	: function(id){
-					this.el = Ext.get(id);
+      // Ext.util.Observableを継承した簡単なクラスを定義
+      TestObs = Ext.extend(Ext.util.Observable, {
+        constructor  : function(id){
+          this.el = Ext.get(id);
 
-					this.addEvents('elclick', 'afterclick', 'afterafterclick', 'shiftend');
+          // addEventsメソッドを使ってカスタムイベントを定義
+          this.addEvents('elclick', 'afterclick', 'afterafterclick', 'shiftend');
 
-					this.el.on('click', this.onElclick, this);
-					TestObs.superclass.constructor.call(this);
-				},
+          this.el.on('click', this.onElclick, this);
 
-				shift : function(opt){
-					var me = this;
-					if(opt.x || opt.y){
-						opt.callback = function(el){
-							me.fireEvent('shiftend', me);	
-						};
-					}
+          // 親クラスのメソッドは必ず呼び出す
+          TestObs.superclass.constructor.call(this);
+        },
 
-					this.el.shift(opt);	
-				},
+        // this.elを操作するためのメソッド
+        shift : function(opt){
+          var me = this;
+          if(opt.x || opt.y){
+            // shift操作が場所の移動(x,yが存在)の場合、shiftendイベントを発生させる
+            opt.callback = function(el){
+              me.fireEvent('shiftend', me);  
+            };
+          }
 
-				onElclick: function(){
-					if(this.fireEvent('elclick', this)){
-						if(this.fireEvent('afterclick', this)){
-							this.fireEvent('afterafterclick', this);
-						}
-					}
-				}
-			});
+          this.el.shift(opt);  
+        },
+
+        // this.elがクリックされた場合のメソッド
+        onElclick: function(){
+          if(this.fireEvent('elclick', this)){
+            if(this.fireEvent('afterclick', this)){
+              this.fireEvent('afterafterclick', this);
+            }
+          }
+        }
+      });
 
       Ext.onReady(function(){
-				var sz = Ext.fly('wrap').getSize(true);
-				var maxX = sz.width - Ext.fly("div1").getWidth(true);
-				var maxY = sz.height - Ext.fly("div1").getHeight(true);
+        var sz = Ext.fly('wrap').getSize(true);
+        var maxX = sz.width - Ext.fly("div1").getWidth(true);
+        var maxY = sz.height - Ext.fly("div1").getHeight(true);
 
-				var getRandomPos = function(max){
-					return function(){
-						return Math.random() * max;
-					}
-				};
+        var getRandomPos = function(max){
+          return function(){
+            return Math.random() * max;
+          }
+        };
 
-				var getX = getRandomPos(maxX);
-				var getY = getRandomPos(maxY);
+        var getX = getRandomPos(maxX);
+        var getY = getRandomPos(maxY);
 
-				var getOpt = function(){
-					return {
-						x: getX(),
-						y: getY(),
-						duration: Math.random()
-					};
-				}
+        var getOpt = function(){
+          return {
+            x: getX(),
+            y: getY(),
+            duration: Math.random()
+          };
+        }
 
-				var a = [];
-				for(var i=1; i<=5; i++){
-					var o = new TestObs("div"+i);
-					o.idx = i-1;
-					o.on({
-						elclick: function(){
-							this.shift(getOpt());
-						},
-						shiftend: function(){
-							if(a[this.idx+1]){
-								a[this.idx+1].shift(getOpt());
-							}
-						},
-						scope: o
-					})
-					a.push(o);
-				}
+        var a = [];
+        for(var i=1; i<=5; i++){
+          var o = new TestObs("div"+i);
+          o.idx = i-1;
 
-				a[0].on('afterclick',function(){
-					this.el.highlight();	
-				},a[0]);
+          // イベントリスナーを設定
+          o.on({
+            elclick: function(){
+              this.shift(getOpt());
+            },
+            shiftend: function(){
+              if(a[this.idx+1]){
+                a[this.idx+1].shift(getOpt());
+              }
+            },
+            scope: o
+          })
+          a.push(o);
+        }
 
-				a[0].on('elclick',function(){
-					this.shift({
-						duration: 1,
-						width: getX(),
-						height: getY()
-					})
-				},a[0]);
+        a[0].on('afterclick',function(){
+          this.el.highlight();  
+        },a[0]);
 
-				Ext.get("btn").on('click',function(e,el){
-					if(el.value == '停止'){
-						el.value = '再開';
-						f = 'suspendEvents';
-					}else{
-						el.value = '停止';
-						f = 'resumeEvents';
-					}
-					Ext.each(a, function(o){
-						if(o[f]){
-							o[f](true);
-						}
-					})
-				});
+        // 一つのイベント(elclick)に対して複数のハンドラーを設定できる
+        a[0].on('elclick',function(){
+          this.shift({
+            duration: 1,
+            width: getX(),
+            height: getY()
+          })
+        },a[0]);
 
+        // suspendEventsとresumeEventsのデモ
+        Ext.get("btn").on('click',function(e,el){
+          if(el.value == '停止'){
+            el.value = '再開';
+            f = 'suspendEvents';
+          }else{
+            el.value = '停止';
+            f = 'resumeEvents';
+          }
+          Ext.each(a, function(o){
+            if(o[f]){
+              o[f](true);
+            }
+          })
+        });
+
+        // 以下はrelayEvents、capture、observeClass、beforeMethod、afterMethodのデモ
 /*
-				WrapObs = Ext.extend(Ext.util.Observable, {
-					constructor: function(id){
-						this.el = Ext.get(id);
-						WrapObs.superclass.constructor.call(this);
+        WrapObs = Ext.extend(Ext.util.Observable, {
+          constructor: function(id){
+            this.el = Ext.get(id);
+            WrapObs.superclass.constructor.call(this);
 
-					}
-				});
+          }
+        });
 
-				var w = new WrapObs("wrap");
-				w.relayEvents(a[0], ['elclick']);
+        var w = new WrapObs("wrap");
+        w.relayEvents(a[0], ['elclick']);
 
-				w.on('elclick', function(){
-					this.el.highlight();		
-				},w);
-				Ext.util.Observable.capture(a[0],function(){
-					console.dir(arguments);
-				});
-				Ext.util.Observable.observeClass(TestObs);
-				TestObs.on("shiftend",function(){
-					console.dir(arguments);
-				});
-				a[4].beforeMethod('shift',function(){
-					alert("Before Shift");	
-				});
-				a[4].afterMethod('shift',function(){
-					alert("After Shift");	
-				});
+        w.on('elclick', function(){
+          this.el.highlight();    
+        },w);
+        Ext.util.Observable.capture(a[0],function(){
+          console.dir(arguments);
+        });
+        Ext.util.Observable.observeClass(TestObs);
+        TestObs.on("shiftend",function(){
+          console.dir(arguments);
+        });
+        a[4].beforeMethod('shift',function(){
+          alert("Before Shift");  
+        });
+        a[4].afterMethod('shift',function(){
+          alert("After Shift");  
+        });
 */
-			
+      
 
       });
     // --></script>
-		<style>
-			.div-wrap {
-				padding: 10px;
-				border: 3px solid red;
-				height: 500px;
-			}
+    <style>
+      .div-wrap {
+        padding: 10px;
+        border: 3px solid red;
+        height: 500px;
+      }
 
-			.divs {
-				border: 1px solid black;
-				width: 100px;
-				height: 100px;
-				position: absolute;
-			}
-		</style>
+      .divs {
+        border: 1px solid black;
+        width: 100px;
+        height: 100px;
+        position: absolute;
+      }
+    </style>
   </head>
   <body>
-		<div id="wrap", class="div-wrap">
-			<div id="div1", class="divs">DIV1</div>
-			<div id="div2", class="divs">DIV2</div>
-			<div id="div3", class="divs">DIV3</div>
-			<div id="div4", class="divs">DIV4</div>
-			<div id="div5", class="divs">DIV5</div>
-		</div>
-		<input type="button" id="btn" value="停止" />
+    <div id="wrap", class="div-wrap">
+      <div id="div1", class="divs">DIV1</div>
+      <div id="div2", class="divs">DIV2</div>
+      <div id="div3", class="divs">DIV3</div>
+      <div id="div4", class="divs">DIV4</div>
+      <div id="div5", class="divs">DIV5</div>
+    </div>
+    <input type="button" id="btn" value="停止" />
   </body>
 </html>
 
