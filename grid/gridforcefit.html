@@ -9,27 +9,27 @@
     <script type="text/javascript"><!--
       Ext.BLANK_IMAGE_URL = "http://extjs.cachefly.net/ext-3.1.1/resources/images/default/s.gif";
       Ext.onReady(function(){
-				new Ext.Window({
-					width: 500,
-					height: 300,
-					layout: 'fit',
-					items: [{
-						xtype: 'grid',
-						viewConfig: {
-							forceFit: true	
-						},
-						store: {
-							xtype: 'arraystore',
-							data: [[1,2,3],[4,5,6],[7,8,9]],
-							fields: "abc".split('') 
-						},
-						columns: [
-							{dataIndex: 'a', header: 'a'},
-							{dataIndex: 'b', header: 'b'},
-							{dataIndex: 'c', header: 'c'}
-						]
-					}]
-				}).show();
+        new Ext.Window({
+          width: 500,
+          height: 300,
+          layout: 'fit',
+          items: [{
+            xtype: 'grid',
+            viewConfig: {
+              forceFit: true  
+            },
+            store: {
+              xtype: 'arraystore',
+              data: [[1,2,3],[4,5,6],[7,8,9]],
+              fields: "abc".split('') 
+            },
+            columns: [
+              {dataIndex: 'a', header: 'a'},
+              {dataIndex: 'b', header: 'b'},
+              {dataIndex: 'c', header: 'c'}
+            ]
+          }]
+        }).show();
       });
     // --></script>
   </head>
