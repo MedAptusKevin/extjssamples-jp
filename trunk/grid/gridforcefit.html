@@ -12,11 +12,11 @@
         new Ext.Window({
           width: 500,
           height: 300,
-          layout: 'fit',
+          layout: 'fit', // gridをWindow内にフィットさせる
           items: [{
             xtype: 'grid',
             viewConfig: {
-              forceFit: true  
+              forceFit: true  // カラムを自動的にフィットさせる 
             },
             store: {
               xtype: 'arraystore',
@@ -24,9 +24,9 @@
               fields: "abc".split('') 
             },
             columns: [
-              {dataIndex: 'a', header: 'a'},
-              {dataIndex: 'b', header: 'b'},
-              {dataIndex: 'c', header: 'c'}
+              {dataIndex: 'a', header: 'a', width: 100},
+              {dataIndex: 'b', header: 'b', width: 150},
+              {dataIndex: 'c', header: 'c'} // widthを指定していないカラムがフィットされる
             ]
           }]
         }).show();
